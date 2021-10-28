@@ -41,20 +41,21 @@ public class PhysicianServiceImpl implements PhysicianService {
 
     @Override
     public void seedAllPhysicians() throws IOException {
-
+        if (this.physicianRepository.count() != 0) {
+            return;
+        }
         List<List<String>> allDoctors = this.gson.fromJson(this.readFileContent(), List.class);
 
         UserRoleEntity userRole = this.userRoleService.findByUserRole(UserRoleEnum.PHYSICIAN);
-
-        for (int i = 0; i < allDoctors.size(); i++) {
-            List<String> doctorFields = allDoctors.get(i);
-            String personalIdentificationNumber = doctorFields.get(0);
-            String region = doctorFields.get(4);
+        int index = 1;
+        for (List<String> doctor : allDoctors) {
+            String personalIdentificationNumber = doctor.get(0);
+            String region = doctor.get(4);
 
             if (!String.valueOf(personalIdentificationNumber.charAt(0)).equals("*") && region.startsWith("Я")) {
-                String firstName = doctorFields.get(1);
-                String middleName = doctorFields.get(2);
-                String lastName = doctorFields.get(3);
+                String firstName = doctor.get(1);
+                String middleName = doctor.get(2);
+                String lastName = doctor.get(3);
 
                 PhysicianEntity physicianEntity = new PhysicianEntity();
                 physicianEntity.setFirstName(firstName);
@@ -62,12 +63,13 @@ public class PhysicianServiceImpl implements PhysicianService {
                 physicianEntity.setLastName(lastName);
                 physicianEntity.setPersonalIdentificationNumber(personalIdentificationNumber);
                 physicianEntity.setRegion(region);
-                physicianEntity.setUsername("username" + (i + 1));
-                physicianEntity.setPassword(passwordEncoder.encode("password" + (i + 1)));
+                physicianEntity.setUsername("username" + index);
+                physicianEntity.setPassword(passwordEncoder.encode("password" + index));
                 physicianEntity.setSpecialty(MedicalSpecialty.OTHER);
                 physicianEntity.setRoles(List.of(userRole));
 
                 this.physicianRepository.save(physicianEntity);
+                index++;
             }
         }
     }
