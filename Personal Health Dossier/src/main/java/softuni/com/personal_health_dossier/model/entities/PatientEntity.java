@@ -1,18 +1,21 @@
 package softuni.com.personal_health_dossier.model.entities;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "patients")
-public class PatientEntity extends BaseEntityUsers {
+public class PatientEntity extends BaseEntityUsers  {
 
     private Integer kilos;
     private Integer height;
     private String age;
     private boolean consentForOrganDonationAfterDeath;
-    private List<UserRoleEntity> roles;
     private List<PhysicianEntity> doctors;
     private List<PrescriptionEntity> prescriptions;
     private List<MedicalCenterEntity> medicalCenters;
@@ -61,14 +64,7 @@ public class PatientEntity extends BaseEntityUsers {
         this.consentForOrganDonationAfterDeath = consentForOrganDonationAfterDeath;
     }
 
-    @ManyToMany
-    public List<UserRoleEntity> getRoles() {
-        return roles;
-    }
 
-    public void setRoles(List<UserRoleEntity> roles) {
-        this.roles = roles;
-    }
 
     @ManyToMany
     public List<PhysicianEntity> getDoctors() {
@@ -124,9 +120,7 @@ public class PatientEntity extends BaseEntityUsers {
         this.pharmacists = pharmacists;
     }
 
-    public void addRole(UserRoleEntity roleEntity) {
-        this.roles.add(roleEntity);
-    }
+
 
     private int getYear(String personalIdentificationNumber) {
         int yearFactor = Integer.parseInt(personalIdentificationNumber.substring(2, 3));
@@ -181,4 +175,6 @@ public class PatientEntity extends BaseEntityUsers {
         }
         return age;
     }
+
+
 }

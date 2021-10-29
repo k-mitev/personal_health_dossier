@@ -1,9 +1,10 @@
 package softuni.com.personal_health_dossier.model.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @MappedSuperclass
-public abstract class BaseEntityUsers {
+public class BaseEntityUsers {
 
     private Long id;
     private String username;
@@ -13,7 +14,7 @@ public abstract class BaseEntityUsers {
     private String lastName;
     private String personalIdentificationNumber;
     private String mobileNumber;
-
+    private List<UserRoleEntity> roles;
 
     public BaseEntityUsers() {
     }
@@ -90,5 +91,14 @@ public abstract class BaseEntityUsers {
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    @ManyToMany
+    public List<UserRoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<UserRoleEntity> roles) {
+        this.roles = roles;
     }
 }

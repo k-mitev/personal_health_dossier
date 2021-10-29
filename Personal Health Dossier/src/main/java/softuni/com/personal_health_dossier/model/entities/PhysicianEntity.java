@@ -12,7 +12,6 @@ import java.util.List;
 public class PhysicianEntity extends BaseEntityUsers {
     private String region;
     private MedicalSpecialty specialty;
-    private List<UserRoleEntity> roles;
     private List<PatientEntity> patients;
     private List<MedicalCenterEntity> hospitals;
     private List<PrescriptionEntity> prescriptions;
@@ -39,14 +38,6 @@ public class PhysicianEntity extends BaseEntityUsers {
         this.specialty = specialty;
     }
 
-    @ManyToMany
-    public List<UserRoleEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<UserRoleEntity> roles) {
-        this.roles = roles;
-    }
 
     @ManyToMany(mappedBy = "doctors")
     public List<PatientEntity> getPatients() {
@@ -75,7 +66,7 @@ public class PhysicianEntity extends BaseEntityUsers {
         this.prescriptions = prescriptions;
     }
 
-    public void addRole(UserRoleEntity roleEntity) {
-        this.roles.add(roleEntity);
-    }
+//    public void addRole(UserRoleEntity roleEntity) {
+//        this.roles.add(roleEntity);
+//    }
 }

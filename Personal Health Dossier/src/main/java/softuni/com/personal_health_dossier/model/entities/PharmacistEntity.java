@@ -10,21 +10,14 @@ import java.util.List;
 @Entity
 @Table(name = "pharmacists")
 public class PharmacistEntity extends BaseEntityUsers {
-    private List<UserRoleEntity> roles;
+
     private List<PrescriptionEntity> prescriptions;
     private LocalDate filledPrescriptionDate;
+    private String region;
 
     public PharmacistEntity() {
     }
 
-    @ManyToMany
-    public List<UserRoleEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<UserRoleEntity> roles) {
-        this.roles = roles;
-    }
 
     @ManyToMany(mappedBy = "filledBy")
     public List<PrescriptionEntity> getPrescriptions() {
@@ -44,7 +37,12 @@ public class PharmacistEntity extends BaseEntityUsers {
         this.filledPrescriptionDate = filledPrescriptionDate;
     }
 
-    public void addRole(UserRoleEntity roleEntity) {
-        this.roles.add(roleEntity);
+    @Column(name = "region", nullable = false)
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 }

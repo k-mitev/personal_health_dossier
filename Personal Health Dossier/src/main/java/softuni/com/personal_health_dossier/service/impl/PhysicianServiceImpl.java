@@ -63,8 +63,8 @@ public class PhysicianServiceImpl implements PhysicianService {
                 physicianEntity.setLastName(lastName);
                 physicianEntity.setPersonalIdentificationNumber(personalIdentificationNumber);
                 physicianEntity.setRegion(region);
-                physicianEntity.setUsername("username" + index);
-                physicianEntity.setPassword(passwordEncoder.encode("password" + index));
+                physicianEntity.setUsername("physicianUsername" + index);
+                physicianEntity.setPassword(passwordEncoder.encode("physicianPassword" + index));
                 physicianEntity.setSpecialty(MedicalSpecialty.OTHER);
                 physicianEntity.setRoles(List.of(userRole));
 
@@ -73,4 +73,6 @@ public class PhysicianServiceImpl implements PhysicianService {
             }
         }
     }
+
+
 }
