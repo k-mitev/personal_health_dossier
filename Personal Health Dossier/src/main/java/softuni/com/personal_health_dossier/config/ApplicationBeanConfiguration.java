@@ -12,10 +12,7 @@ import softuni.com.personal_health_dossier.util.ValidationUtilImpl;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
-import java.lang.reflect.Type;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 
 
 @Configuration
