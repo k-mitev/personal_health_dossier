@@ -5,21 +5,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import softuni.com.personal_health_dossier.security.UserService;
-
-
+import softuni.com.personal_health_dossier.security.UserServiceDetails;
 
 
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final UserService userService;
+    private final UserServiceDetails userServiceDetails;
 
-
-    public ApplicationSecurityConfiguration(UserService userService) {
-        this.userService = userService;
-
+    public ApplicationSecurityConfiguration(UserServiceDetails userServiceDetails) {
+        this.userServiceDetails = userServiceDetails;
     }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,7 +28,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService);
+        auth.userDetailsService(userServiceDetails);
 
     }
 }
