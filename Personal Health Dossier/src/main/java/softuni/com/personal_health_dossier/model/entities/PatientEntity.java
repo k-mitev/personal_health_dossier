@@ -1,21 +1,22 @@
 package softuni.com.personal_health_dossier.model.entities;
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import softuni.com.personal_health_dossier.model.entities.enums.BloodGroupEnum;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Entity
 @Table(name = "patients")
-public class PatientEntity extends BaseEntityUsers  {
+public class PatientEntity extends BaseEntityUsers {
 
     private Integer kilos;
     private Integer height;
     private String age;
     private boolean consentForOrganDonationAfterDeath;
+    private BloodGroupEnum bloodGroup;
     private List<PhysicianEntity> doctors;
     private List<PrescriptionEntity> prescriptions;
     private List<MedicalCenterEntity> medicalCenters;
@@ -23,8 +24,14 @@ public class PatientEntity extends BaseEntityUsers  {
     private List<AllergyEntity> allergies;
     private List<PharmacistEntity> pharmacists;
 
-    public PatientEntity() {
+    public PatientEntity(String pin) {
+        this.setPersonalIdentificationNumber(pin);
+        this.age = this.setTheAge();
+    }
 
+    public PatientEntity() {
+        this.consentForOrganDonationAfterDeath = false;
+//        this.age=this.setTheAge();
     }
 
     @Column(name = "kilos")
@@ -51,7 +58,7 @@ public class PatientEntity extends BaseEntityUsers  {
     }
 
     public void setAge(String age) {
-        this.age = this.setAge();
+        this.age = this.setTheAge();
 
     }
 
@@ -64,7 +71,14 @@ public class PatientEntity extends BaseEntityUsers  {
         this.consentForOrganDonationAfterDeath = consentForOrganDonationAfterDeath;
     }
 
+    @Enumerated(EnumType.STRING)
+    public BloodGroupEnum getBloodGroup() {
+        return bloodGroup;
+    }
 
+    public void setBloodGroup(BloodGroupEnum bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
 
     @ManyToMany
     public List<PhysicianEntity> getDoctors() {
@@ -120,7 +134,10 @@ public class PatientEntity extends BaseEntityUsers  {
         this.pharmacists = pharmacists;
     }
 
+    public void addRole(UserRoleEntity userRoleEntity) {
+        this.getRoles().add(userRoleEntity);
 
+    }
 
     private int getYear(String personalIdentificationNumber) {
         int yearFactor = Integer.parseInt(personalIdentificationNumber.substring(2, 3));
@@ -151,9 +168,9 @@ public class PatientEntity extends BaseEntityUsers  {
         return month;
     }
 
-    private String setAge() {
-        String age;
-        String personalIdentificationNumber = super.getPersonalIdentificationNumber();
+    public String setTheAge() {
+        String age = "";
+        String personalIdentificationNumber = this.getPersonalIdentificationNumber();
         int year = this.getYear(personalIdentificationNumber);
         int month = this.getMonth(personalIdentificationNumber);
         int day = Integer.parseInt(personalIdentificationNumber.substring(4, 5)) >= 1 ?
@@ -171,8 +188,24 @@ public class PatientEntity extends BaseEntityUsers  {
             }
 
         } else {
-            age = String.format("%d year(s)", currentYear - year);
+            Period period = LocalDate.of(year, month, day).until(LocalDate.now());
+            if (period.isNegative()) {
+                age = "Invalid";
+            } else {
+                if (period.getYears() > 0) {
+                    age = String.format("%d year(s)", period.getYears());
+                } else {
+                    if (period.getMonths() > 0) {
+                        age = String.format("%d month(s)", period.getMonths());
+                    } else {
+                        age = String.format("%d day(s)", period.getDays());
+                    }
+                }
+            }
+
+
         }
+
         return age;
     }
 

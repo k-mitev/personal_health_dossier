@@ -1,6 +1,7 @@
 package softuni.com.personal_health_dossier.model.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @MappedSuperclass
@@ -17,6 +18,7 @@ public class BaseEntityUsers {
     private List<UserRoleEntity> roles;
 
     public BaseEntityUsers() {
+        this.roles = new ArrayList<>();
     }
 
     @Id
@@ -93,7 +95,7 @@ public class BaseEntityUsers {
         this.mobileNumber = mobileNumber;
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     public List<UserRoleEntity> getRoles() {
         return roles;
     }

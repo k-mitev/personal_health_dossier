@@ -7,17 +7,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import softuni.com.personal_health_dossier.security.UserServiceDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import softuni.com.personal_health_dossier.service.impl.HealthDossierUserService;
 
 
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final UserServiceDetails userServiceDetails;
+    private final HealthDossierUserService healthDossierUserService;
     private final PasswordEncoder passwordEncoder;
 
-    public ApplicationSecurityConfiguration(UserServiceDetails userServiceDetails, PasswordEncoder passwordEncoder) {
-        this.userServiceDetails = userServiceDetails;
+    public ApplicationSecurityConfiguration(HealthDossierUserService healthDossierUserService, PasswordEncoder passwordEncoder) {
+        this.healthDossierUserService = healthDossierUserService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -27,14 +28,27 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
         http
                 .authorizeRequests()
                 .antMatchers("/js/**", "/css/**", "/img/**").permitAll()
-                .antMatchers("/").permitAll()
-                .antMatchers("/**").authenticated();
+                .antMatchers("/", "/users/register", "/users/login").permitAll()
+                .antMatchers("/**").authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/users/login")
+                .usernameParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY)
+                .passwordParameter(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY)
+                .defaultSuccessUrl("/home")
+                .failureForwardUrl("/users/login-error")
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(userServiceDetails)
+                .userDetailsService(healthDossierUserService)
                 .passwordEncoder(passwordEncoder);
 
     }
