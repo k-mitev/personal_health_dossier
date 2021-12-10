@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Judge v2</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container ">
+    <nav class="navbar navbar-expand-xl navbar-light bg-light rounded">
+        <a class="navbar-brand" href="#">
+            <h1 class="tm-site-title mb-0"><em>Health Dossier</em></h1>
+        </a>
+        <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto">
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link d-flex" th:href="@{/users/login}">
+                        <span>Login</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-lg-5 border-right border-bottom bg-transparent h-100">
+        <h1 class="w-100 text-dark text-right"><i>Register</i></h1>
+    </div>
+    <div class="d-flex justify-content-center ">
+        <!--                <div class="row g-3 align-items-center">-->
+        <!--                    <img alt="Picture of Madonna" th:src="{/images/madonna.jpg}" class="w-50 rounded">-->
+        <!--                </div>-->
+        <form th:object="${userRegisterBindingModel}"
+              th:action="@{/users/register}"
+              method="POST"
+              class="text-dark">
+            <div class="form-row m-5">
+                <div class="col">
+                    <label for="username">Username</label>
+                    <input name="username"
+                           th:field="*{username}"
+                           th:errorclass="bg-danger"
+                           required minlength="2" maxlength="20"
+                           id="username"
+                           type="text" class="form-control" placeholder="Username">
+                    <small th:if="${#fields.hasErrors('username')}" th:errors="*{username}" id="nameError"
+                           class="text-light form-text bg-danger rounded">Name must be between 3
+                        and 20
+                        characters</small>
+                    <small th:if="${isUsed}" class="text-light form-text bg-danger rounded">Username is
+                        already
+                        used</small>
+                </div>
+                <div class="col">
+                    <label for="firstName">First name</label>
+                    <input th:field="*{firstName}"
+                           th:errorclass="bg-danger"
+                           required minlength="2" maxlength="23"
+                           name="firstName"
+                           id="firstName" type="text" class="form-control" placeholder="First name">
+                    <small th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                           id="firstNameError" class="text-light form-text bg-danger rounded">Enter valid first
+                        name</small>
+                </div>
+            </div>
+            <div class="form-row m-5">
+                <div class="col">
+                    <label for="middleName">Middle name</label>
+                    <input name="middleName"
+                           th:field="*{middleName}"
+                           th:errorclass="bg-danger"
+                           maxlength="23"
+                           type="text"  id="middleName"
+                            class="form-control" placeholder="Middle name">
+                    <small th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"
+                           class="text-light form-text bg-danger rounded">Enter valid middle name</small>
+                </div>
+                <div class="col">
+                    <label for="lastName">Last name</label>
+                    <input name="lastName"
+                           th:field="*{lastName}"
+                           th:errorclass="bg-danger"
+                           required minlength="2" maxlength="23"
+                           type="text" id="lastName"
+                            class="form-control" placeholder="Last name">
+                    <small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                           class="text-light form-text bg-danger rounded">Enter valid last name</small>
+                </div>
+            </div>
+            <div class="form-row m-5">
+                <div class="col">
+                    <label for="password">Password</label>
+                    <input name="password"
+                           th:field="*{password}"
+                           th:errorclass="bg-danger"
+                           required minlength="3" maxlength="30"
+                           type="password"
+                           id="password"
+                           class="form-control" placeholder="Password">
+                    <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                           class="text-light form-text bg-danger rounded">Enter valid password</small>
+                </div>
+                <div class="col">
+                    <label for="confirmPassword">Confirm password</label>
+                    <input name="confirmPassword"
+                           th:field="*{confirmPassword}"
+                           th:errorclass="bg-danger"
+                           required minlength="3" maxlength="30"
+                           type="password"
+                           id="confirmPassword"
+                           class="form-control" placeholder="Confirm password">
+                    <small th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"
+                           class="text-light form-text bg-danger rounded">Enter valid password</small>
+                </div>
+
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+
+                    <small th:if="${passwordsDontMatch}" class="text-light form-text bg-danger rounded">Passwords
+                        should
+                        match</small>
+
+
+            </div>
+            <div class="form-row m-5">
+                <div class="col">
+                    <label for="personalIdentificationNumber">Personal Identification Number</label>
+                    <input name="personalIdentificationNumber"
+                              th:field="*{personalIdentificationNumber}"
+                              th:errorclass="bg-danger"
+                              required minlength="10" maxlength="10"
+                              type="text"
+                              id="personalIdentificationNumber"
+                              class="form-control" placeholder="Personal Identification Number">
+                    <small th:if="${#fields.hasErrors('personalIdentificationNumber')}"
+                           th:errors="*{personalIdentificationNumber}" class="text-light form-text bg-danger rounded">Enter valid
+                    personal identification number</small>
+                    <small th:if="${pinExists}" class="text-light form-text bg-danger rounded">User with this PIN
+                        already exists</small>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center mt-4">
+                <button class="btn btn-primary btn-block w-50" type="submit">Register</button>
+            </div>
+        </form>
+
+    </div>
+    <!--    <div class="row tm-mt-big">-->
+    <!--        <div class="col mx-auto tm-login-col">-->
+    <!--            <div class="bg-white tm-block">-->
+    <!--                <div class="row align-self-center">-->
+    <!--                    <div class="col align-self-center">-->
+    <!--                        <form action="#" method="" class="tm-login-form">-->
+    <!--                            <div class="input-group">-->
+    <!--                                <label for="username" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Username</label>-->
+    <!--                                <input name="username" type="text"-->
+    <!--                                       class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"-->
+    <!--                                       id="username" placeholder="Enter username">-->
+    <!--                                <div class="mx-auto">-->
+    <!--                                    <small class="text-danger">Username must be between 2 and 10 characters</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group mt-3">-->
+    <!--                                <label for="password" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Password</label>-->
+    <!--                                <input name="password" type="password" class="form-control validate"-->
+    <!--                                       id="password" placeholder="Enter password">-->
+    <!--                                <div class="mx-auto">-->
+    <!--                                    <small class="text-danger">Password must be between 3 and 10 characters</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group mt-3">-->
+    <!--                                <label for="confirmPassword" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Confirm-->
+    <!--                                    Password</label>-->
+    <!--                                <input name="confirmPassword" type="password" class="form-control validate"-->
+    <!--                                       id="confirmPassword" placeholder="Confirm password">-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group">-->
+    <!--                                <label for="firstName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">First Name</label>-->
+    <!--                                <input name="firstName" type="text"-->
+    <!--                                       class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"-->
+    <!--                                       id="firstName" placeholder="Enter first name">-->
+    <!--                                <div class="mx-auto">-->
+    <!--                                    <small class="text-danger">Enter valid first name</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group mt-3">-->
+    <!--                                <label for="middleName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Middle-->
+    <!--                                    Name</label>-->
+    <!--                                <input name="middleName" type="text" class="form-control validate" id="middleName"-->
+    <!--                                       placeholder="Enter middle name">-->
+    <!--                                <div class="mx-auto">-->
+    <!--                                    <small class="text-danger">Enter valid middle name</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group mt-3">-->
+    <!--                                <label for="lastName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Last-->
+    <!--                                    Name</label>-->
+    <!--                                <input name="firstName" type="text" class="form-control validate" id="lastName"-->
+    <!--                                       placeholder="Enter last name">-->
+    <!--                                <div class="mx-auto text-center align-content-center">-->
+    <!--                                    <small class="text-danger">Enter valid last name</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group mt-3">-->
+    <!--                                <label for="personalIdentificationNumber"-->
+    <!--                                       class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Personal-->
+    <!--                                    Identification Number</label>-->
+    <!--                                <input name="personalIdentificationNumber" type="text" class="form-control validate"-->
+    <!--                                       id="personalIdentificationNumber"-->
+    <!--                                       placeholder="Enter personal identification number">-->
+    <!--                                <div class="mx-auto">-->
+    <!--                                    <small class="text-danger">Enter valid personal identification number</small>-->
+    <!--                                </div>-->
+    <!--                            </div>-->
+    <!--                            <div class="input-group mt-3">-->
+    <!--                                <button type="submit" class="btn btn-primary d-inline-block mx-auto">Register</button>-->
+    <!--                            </div>-->
+
+    <!--                        </form>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+</div>
+<footer class="row">
+    <div class="col-12 container-fluid text-right font-weight-light">
+        <p class="d-inline-block tm-bg-black text-white py-2 px-4">
+            &copy; Spring Team 2020
+        </p>
+    </div>
+</footer>
+</body>
+
+</html>

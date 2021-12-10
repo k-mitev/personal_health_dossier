@@ -4,16 +4,21 @@ import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "allergies")
 public class AllergyEntity extends BaseEntity {
     private LocalDate registeredOnDate;
-    private List<AllergenEntity> allergens;
+    private Set<AllergenEntity> allergens;
     private PhysicianEntity registeredBy;
+    private PatientEntity patient;
 
     public AllergyEntity() {
+        this.allergens=new HashSet<>();
     }
 
     @Column(name = "registered_on_date", nullable = false)
@@ -25,12 +30,12 @@ public class AllergyEntity extends BaseEntity {
         this.registeredOnDate = registeredOnDate;
     }
 
-    @OneToMany
-    public List<AllergenEntity> getAllergens() {
+    @ManyToMany
+    public Set<AllergenEntity> getAllergens() {
         return allergens;
     }
 
-    public void setAllergens(List<AllergenEntity> allergens) {
+    public void setAllergens(Set<AllergenEntity> allergens) {
         this.allergens = allergens;
     }
 
@@ -41,5 +46,14 @@ public class AllergyEntity extends BaseEntity {
 
     public void setRegisteredBy(PhysicianEntity registeredBy) {
         this.registeredBy = registeredBy;
+    }
+
+    @ManyToOne
+    public PatientEntity getPatient() {
+        return patient;
+    }
+
+    public void setPatient(PatientEntity patient) {
+        this.patient = patient;
     }
 }

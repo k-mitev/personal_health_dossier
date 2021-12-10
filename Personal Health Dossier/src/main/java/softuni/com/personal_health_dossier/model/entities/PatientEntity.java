@@ -5,14 +5,16 @@ import softuni.com.personal_health_dossier.model.entities.enums.BloodGroupEnum;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "patients")
 public class PatientEntity extends BaseEntityUsers {
-
-    private Integer kilos;
+    private String imgUrl;
+    private Double kilos;
     private Integer height;
     private String age;
     private boolean consentForOrganDonationAfterDeath;
@@ -31,15 +33,24 @@ public class PatientEntity extends BaseEntityUsers {
 
     public PatientEntity() {
         this.consentForOrganDonationAfterDeath = false;
-//        this.age=this.setTheAge();
+        this.allergies = new ArrayList<>();
+    }
+
+    @Column(name = "img_url")
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     @Column(name = "kilos")
-    public Integer getKilos() {
+    public Double getKilos() {
         return kilos;
     }
 
-    public void setKilos(Integer kilos) {
+    public void setKilos(Double kilos) {
         this.kilos = kilos;
     }
 
@@ -89,7 +100,7 @@ public class PatientEntity extends BaseEntityUsers {
         this.doctors = doctors;
     }
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "patient")
     public List<PrescriptionEntity> getPrescriptions() {
         return prescriptions;
     }
@@ -98,7 +109,7 @@ public class PatientEntity extends BaseEntityUsers {
         this.prescriptions = prescriptions;
     }
 
-    @ManyToMany
+    @OneToMany(mappedBy = "patient")
     public List<MedicalCenterEntity> getMedicalCenters() {
         return medicalCenters;
     }
@@ -116,7 +127,7 @@ public class PatientEntity extends BaseEntityUsers {
         this.immunizations = immunizations;
     }
 
-    @OneToMany
+    @OneToMany(mappedBy = "patient")
     public List<AllergyEntity> getAllergies() {
         return allergies;
     }
@@ -136,7 +147,10 @@ public class PatientEntity extends BaseEntityUsers {
 
     public void addRole(UserRoleEntity userRoleEntity) {
         this.getRoles().add(userRoleEntity);
+    }
 
+    public void addAllergy(AllergyEntity allergyEntity) {
+        this.allergies.add(allergyEntity);
     }
 
     private int getYear(String personalIdentificationNumber) {
@@ -180,15 +194,21 @@ public class PatientEntity extends BaseEntityUsers {
         int currentMonthValue = LocalDate.now().getMonthValue();
         int currentDayOfMonth = LocalDate.now().getDayOfMonth();
 
+        Period period = LocalDate.of(year, month, day).until(LocalDate.now());
+
         if (currentYear - year == 0) {
             if (currentMonthValue - month == 0) {
                 age = String.format("%d day(s)", currentDayOfMonth - day);
             } else {
-                age = String.format("%d month(s)", currentMonthValue - month);
+                if (period.getMonths() > 0) {
+                    age = String.format("%d month(s)", period.getMonths());
+                } else {
+                    age = String.format("%d day(s)", period.getDays());
+                }
+
             }
 
         } else {
-            Period period = LocalDate.of(year, month, day).until(LocalDate.now());
             if (period.isNegative()) {
                 age = "Invalid";
             } else {

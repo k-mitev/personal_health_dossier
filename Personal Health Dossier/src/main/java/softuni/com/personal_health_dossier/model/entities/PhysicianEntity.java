@@ -10,13 +10,23 @@ import java.util.List;
 @Entity
 @Table(name = "doctors")
 public class PhysicianEntity extends BaseEntityUsers {
+    private String imgUrl;
     private String region;
     private MedicalSpecialty specialty;
     private List<PatientEntity> patients;
-    private List<MedicalCenterEntity> hospitals;
+    private List<MedicalCenterEntity> medicalCenters;
     private List<PrescriptionEntity> prescriptions;
 
     public PhysicianEntity() {
+    }
+
+    @Column(name = "img_url")
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
     @Column(name = "region", nullable = false)
@@ -48,13 +58,13 @@ public class PhysicianEntity extends BaseEntityUsers {
         this.patients = patients;
     }
 
-    @ManyToMany
-    public List<MedicalCenterEntity> getHospitals() {
-        return hospitals;
+    @ManyToMany(mappedBy = "doctors")
+    public List<MedicalCenterEntity> getMedicalCenters() {
+        return medicalCenters;
     }
 
-    public void setHospitals(List<MedicalCenterEntity> hospitals) {
-        this.hospitals = hospitals;
+    public void setMedicalCenters(List<MedicalCenterEntity> hospitals) {
+        this.medicalCenters = hospitals;
     }
 
     @OneToMany(mappedBy = "issuedBy")
@@ -66,7 +76,5 @@ public class PhysicianEntity extends BaseEntityUsers {
         this.prescriptions = prescriptions;
     }
 
-//    public void addRole(UserRoleEntity roleEntity) {
-//        this.roles.add(roleEntity);
-//    }
+
 }

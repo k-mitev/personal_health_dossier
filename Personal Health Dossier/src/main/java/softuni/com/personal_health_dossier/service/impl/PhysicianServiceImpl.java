@@ -7,10 +7,12 @@ import softuni.com.personal_health_dossier.model.entities.PhysicianEntity;
 import softuni.com.personal_health_dossier.model.entities.UserRoleEntity;
 import softuni.com.personal_health_dossier.model.entities.enums.MedicalSpecialty;
 import softuni.com.personal_health_dossier.model.entities.enums.UserRoleEnum;
+import softuni.com.personal_health_dossier.model.services.PhysicianEditProfileServiceModel;
 import softuni.com.personal_health_dossier.repository.PhysicianRepository;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 import softuni.com.personal_health_dossier.service.UserRoleService;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 
 @Service
+@Transactional
 public class PhysicianServiceImpl implements PhysicianService {
     private final static String PHYSICIAN_PATH = "src/main/resources/files/json/PhysicianRegisterInBG_March2019.json";
 
@@ -78,6 +81,22 @@ public class PhysicianServiceImpl implements PhysicianService {
     @Override
     public Optional<PhysicianEntity> findPhysicianByUsername(String username) {
         return this.physicianRepository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<PhysicianEntity> findPhysicianById(Long id) {
+
+        return this.physicianRepository.findById(id);
+    }
+
+    @Override
+    public void updatePhysician(PhysicianEditProfileServiceModel serviceModel) {
+        this.physicianRepository.updatePhysicianEntity(serviceModel.getUsername(),
+                serviceModel.getFirstName(), serviceModel.getMiddleName(),
+                serviceModel.getLastName(), serviceModel.getMobileNumber(),
+                serviceModel.getPassword(), serviceModel.getRegion(),
+                serviceModel.getSpecialty(), serviceModel.getImgUrl(),
+                serviceModel.getId());
     }
 
 

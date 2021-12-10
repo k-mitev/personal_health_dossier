@@ -16,10 +16,11 @@ public class PrescriptionEntity extends BaseEntity {
     private String description;
     private Integer usageTimes;
     private PhysicianEntity issuedBy;
-    private PatientEntity user;
+    private PatientEntity patient;
     private List<PharmacistEntity> filledBy;
 
     public PrescriptionEntity() {
+        this.issueDate = LocalDate.now();
     }
 
     @NotNull
@@ -38,7 +39,7 @@ public class PrescriptionEntity extends BaseEntity {
     }
 
     private void setIssueDate(LocalDate issueDate) {
-        this.issueDate = LocalDate.now();
+        this.issueDate = issueDate;
     }
 
     @Column(name = "expiry_date", nullable = false)
@@ -47,11 +48,7 @@ public class PrescriptionEntity extends BaseEntity {
     }
 
     private void setExpiryDate(LocalDate expiryDate) {
-        if (this.getType().name().equals("WHITE")) {
-            this.expiryDate = this.getIssueDate().plusMonths(6);
-        } else {
-            this.expiryDate = this.getIssueDate().plusDays(6);
-        }
+        this.expiryDate = expiryDate;
 
     }
 
@@ -83,12 +80,12 @@ public class PrescriptionEntity extends BaseEntity {
     }
 
     @ManyToOne
-    public PatientEntity getUser() {
-        return user;
+    public PatientEntity getPatient() {
+        return patient;
     }
 
-    public void setUser(PatientEntity user) {
-        this.user = user;
+    public void setPatient(PatientEntity user) {
+        this.patient = user;
     }
 
     @ManyToMany
@@ -99,4 +96,13 @@ public class PrescriptionEntity extends BaseEntity {
     public void setFilledBy(List<PharmacistEntity> filledBy) {
         this.filledBy = filledBy;
     }
+
+    public void setTheExpiryDate() {
+        if (this.getType().name().equals("WHITE")) {
+            this.expiryDate = this.getIssueDate().plusMonths(6);
+        } else {
+            this.expiryDate = this.getIssueDate().plusDays(6);
+        }
+    }
+
 }

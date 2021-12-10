@@ -189,7 +189,7 @@ label {
 }
 
 input[type='number'] {
-    width: 80px;
+    width: 200px;
 }
 
 .btn {
@@ -395,7 +395,27 @@ footer {
     box-shadow: 10px 10px 35px 1px;
     background: linear-gradient(white, #005cbf);
 }
+#patientTable {
+    border-collapse: collapse; /* Collapse borders */
+    width: 100%; /* Full-width */
+    border: 1px solid #ddd; /* Add a grey border */
+    font-size: 18px; /* Increase font-size */
+}
 
+#patientTable th, #patientTable td {
+    text-align: left; /* Left-align text */
+    padding: 12px; /* Add padding */
+}
+
+#patientTable tr {
+    /* Add a bottom border to all table rows */
+    border-bottom: 1px solid #ddd;
+}
+
+#patientTable tr.header, #patientTable tr:hover {
+    /* Add a grey background color to the table header and on hover */
+    background-color: #f1f1f1;
+}
 @media (min-width: 992px) {
     .navbar-expand-lg .navbar-nav .nav-link {
         padding: 15px 20px;

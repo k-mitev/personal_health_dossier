@@ -1,9 +1,8 @@
 package softuni.com.personal_health_dossier.model.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -12,13 +11,18 @@ import java.util.List;
 public class MedicalCenterEntity extends BaseEntity {
     private String name;
     private String address;
+    private LocalDateTime hospitalizationDateAndTime;
+    private LocalDateTime dischargeDateAndTime;
+    private String medicalTreatment;
     private List<PhysicianEntity> doctors;
-    private List<PatientEntity> patients;
+    private PatientEntity patient;
 
     public MedicalCenterEntity() {
+        this.doctors = new ArrayList<>();
+
     }
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
@@ -27,7 +31,7 @@ public class MedicalCenterEntity extends BaseEntity {
         this.name = name;
     }
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
     public String getAddress() {
         return address;
     }
@@ -36,7 +40,34 @@ public class MedicalCenterEntity extends BaseEntity {
         this.address = address;
     }
 
-    @ManyToMany(mappedBy = "hospitals")
+    @Column(name = "hospitalization_date_time", nullable = false)
+    public LocalDateTime getHospitalizationDateAndTime() {
+        return hospitalizationDateAndTime;
+    }
+
+    public void setHospitalizationDateAndTime(LocalDateTime dateAndTimeOfHospitalization) {
+        this.hospitalizationDateAndTime = dateAndTimeOfHospitalization;
+    }
+
+    @Column(name = "discharge_date_time", nullable = false)
+    public LocalDateTime getDischargeDateAndTime() {
+        return dischargeDateAndTime;
+    }
+
+    public void setDischargeDateAndTime(LocalDateTime dateAndTimeOfDischarge) {
+        this.dischargeDateAndTime = dateAndTimeOfDischarge;
+    }
+
+    @Column(name = "medical_treatment", nullable = false, columnDefinition = "TEXT")
+    public String getMedicalTreatment() {
+        return medicalTreatment;
+    }
+
+    public void setMedicalTreatment(String medicalTreatment) {
+        this.medicalTreatment = medicalTreatment;
+    }
+
+    @ManyToMany
     public List<PhysicianEntity> getDoctors() {
         return doctors;
     }
@@ -45,12 +76,14 @@ public class MedicalCenterEntity extends BaseEntity {
         this.doctors = doctors;
     }
 
-    @ManyToMany(mappedBy = "medicalCenters")
-    public List<PatientEntity> getPatients() {
-        return patients;
+    @ManyToOne
+    public PatientEntity getPatient() {
+        return patient;
     }
 
-    public void setPatients(List<PatientEntity> patients) {
-        this.patients = patients;
+    public void setPatient(PatientEntity patient) {
+        this.patient = patient;
     }
+
+
 }

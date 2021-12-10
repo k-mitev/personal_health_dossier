@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Judge v2</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--    Calendar-->
+    <script src="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.js"
+            integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.css"
+          integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
+</head>
+
+<body id="reportsPage">
+<div class="" id="home">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="navbar navbar-expand-xl navbar-light bg-light rounded">
+                    <a class="navbar-brand" th:href="@{/home}">
+                        <h1 class="tm-site-title mb-0"><em>Health Dossier</em></h1>
+                    </a>
+                    <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div sec:authorize="hasRole('PATIENT')" th:object="${patientViewModel}"
+                         class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/home}">
+                                    <span th:text="|Hello, *{getFirstName()} *{getLastName()}!|"></span>
+                                </a>
+                            </li>
+
+                            <li sec:authorize="hasRole('ADMIN')" class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/physicians/add">Add Physician</a>
+                                    <a class="dropdown-item" href="/pharmacists/add">Add Pharmacist</a>
+                                    <a class="dropdown-item" href="/users/add-role">Add Role</a>
+
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/medical-centers/all/{id}(id=*{id})}">Medical Centers</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/prescriptions/all/{id}(id=*{id})}">Prescriptions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/allergies/all/{id}(id=*{id})}">Allergies</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/immunizations/all/{id}(id=*{id})}">Immunizations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/patients/edit-profile/{id}(id=*{id})}">Profile</a>
+                            </li>
+
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <form th:action="@{/logout}" method="POST">
+                                    <button type="submit" class="nav-link d-flex btn btn-link">
+                                        Logout
+                                    </button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div sec:authorize="hasRole('PHYSICIAN')" th:object="${physicianViewModel}"
+                         class="collapse navbar-collapse">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/home}">
+                                    <span th:text="|Д-р, *{lastName}! You are viewing the profile of patient: *{patient.firstName} *{patient.lastName}!|"></span>
+                                </a>
+                            </li>
+
+                            <li sec:authorize="hasRole('ADMIN')" class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/physicians/add">Add Physician</a>
+                                    <a class="dropdown-item" href="/pharmacists/add">Add Pharmacist</a>
+                                    <a class="dropdown-item" href="/users/add-role">Add Role</a>
+
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/immunizations/add">Immunization</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/prescriptions/add">Write a prescription</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/medical-centers/add">Hospitalize</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/allergies/add">Add Allergy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/physicians/edit-profile/{id}(id=*{id})}">Profile</a>
+                            </li>
+                            <!--                            <li class="nav-item d-flex">-->
+                            <!--                                <form class="navbar-form">-->
+
+                            <!--                                    <input class="form-control input-sm" type="search" placeholder="Search"-->
+                            <!--                                           aria-label="Search Small">-->
+                            <!--                                    <button class="btn btn-xs btn-outline-info navbar-btn d-flex" type="submit">Search</button>-->
+
+
+                            <!--                                </form>-->
+                            <!--                            </li>-->
+                        </ul>
+                        <!--                        <form class="navbar-form navbar-left" action="/action_page.php">-->
+                        <!--                            <div class="input-group-sm">-->
+                        <!--                                <input type="text" class="form-control" placeholder="Search Patient" aria-label="Search Small">-->
+                        <!--                                <button type="submit" class="btn btn-info" style="height:35px; width:auto; padding-top: 3px; border-radius: 5px">Search</button>-->
+
+                        <!--                            </div>-->
+                        <!--                        </form>-->
+
+                        <ul class="navbar-nav">
+
+                            <li class="nav-item">
+                                <form th:action="@{/logout}" method="POST">
+                                    <button type="submit" class="nav-link d-flex btn btn-link">
+                                        Logout
+                                    </button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- row -->
+        <br>
+        <br>
+        <br>
+        <div th:object="${patientViewModel}" class="row">
+            <div class="col-sm-4">
+
+                <form class="form-row" th:action="@{/patients/modify/kilos/{id}(id=*{id})}" method="POST">
+                    <div class="col">
+
+                    </div>
+                    <div  class="col">
+                        <div class="row">
+                            <label for="kilos" class="col-form-label text-dark">Weight in kilos: </label>
+                        </div>
+                        <div class="row">
+                            <p sec:authorize="hasRole('PATIENT')" th:text="*{kilos} ?: 'none'"
+                               class="text-info bg-light"></p>
+                            <input th:field="${patientModifyKilosBindingModel.kilos}"
+                                   th:if="${#authorization.expression('hasRole(''ROLE_PHYSICIAN'')')}" id="kilos"
+                                   type="number" step="any" min="0" max="250" name="kilos"
+                                   th:placeholder="*{kilos} ?: 'none'">
+                            <!--                                   th:disabled="*{!username.startsWith('physician')}"-->
+
+                        </div>
+
+                    </div>
+                    <div class="d-flex flex-column justify-content-end">
+                        <button sec:authorize="hasRole('PHYSICIAN')" type="submit"
+                                class="btn btn-success btn-small text-center"
+                                style="width: 80px; height: 30px; padding-top: 2px; padding-left: 8px; border-radius: 3px">
+                            Change
+                        </button>
+                    </div>
+                </form>
+                <br><br>
+                <form class="form-row" th:action="@{/patients/modify/height/{id}(id=*{id})}" method="POST">
+                    <div class="col"></div>
+                    <div class="col">
+                        <div class="row">
+                            <label for="height" class="col-form-label text-dark">Height in centimeters:</label>
+                        </div>
+                        <div class="row">
+                            <p sec:authorize="hasRole('PATIENT')" th:text="*{height} ?: 'none'"
+                               class="text-info bg-light"></p>
+                            <input th:field="${patientModifyHeightBindingModel.height}"
+                                   sec:authorize="hasRole('PHYSICIAN')" id="height" type="number" min="0" max="250"
+                                   name="height" maxlength="5" size="5"
+                                   th:placeholder="*{height} ?: 'none'">
+                        </div>
+
+                    </div>
+                    <div class="d-flex flex-column justify-content-end">
+                        <button sec:authorize="hasRole('PHYSICIAN')" type="submit"
+                                class="btn btn-success btn-small text-center"
+                                style="width: 80px; height: 30px; padding-top: 2px; padding-left: 8px; border-radius: 3px">
+                            Change
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-4">
+                <img alt="Hearth" th:src="*{imgUrl}?:'/img/hearth.jpg'" class="w-100 rounded">
+            </div>
+            <div class="col-sm-4">
+                <form class="form-row">
+
+                    <div class="col">
+                        <label for="age" class="col-form-label text-dark">Age:</label>
+                        <input id="age" type="text" name="age"
+                               disabled
+                               th:placeholder="*{age} ?: 'none'">
+                    </div>
+                    <div class="col">
+                        <!--                        <button sec:authorize="hasRole('PHYSICIAN')" type="submit">Set Value</button>-->
+                    </div>
+                </form>
+                <br><br>
+                <form class="form-row" th:action="@{/patients/modify/bloodGroup/{id}(id=*{id})}" method="POST">
+
+                    <div class="col">
+                        <label for="bloodGroup">Blood group:</label>
+<!--                        <div class="row">-->
+                            <p sec:authorize="hasRole('PATIENT')" th:text="*{bloodGroup} ?: 'none'"
+                               class="text-info bg-light"></p>
+<!--                        </div>-->
+                        <select th:field="${patientModifyBloodGroupBindingModel.bloodGroup}" sec:authorize="hasRole('PHYSICIAN')" id="bloodGroup" name="bloodGroup"
+                                class="custom-select">
+                            <option value="" selected>Select group</option>
+                            <option
+                                    th:each="g : ${T(softuni.com.personal_health_dossier.model.entities.enums.BloodGroupEnum).values()}"
+                                    th:value="${g.name()}"
+                                    th:selected="${g}==${patientModifyBloodGroupBindingModel.bloodGroup}"
+                                    th:text="${g.toString()}">Select group
+                            </option>
+                        </select>
+                        <small class="invalid-feedback form-text bg-danger rounded">You must select
+                            group</small>
+                    </div>
+                    <div class="d-flex flex-column justify-content-end">
+                        <button sec:authorize="hasRole('PHYSICIAN')" type="submit"
+                                class="btn btn-success btn-small text-center"
+                                style="width: 80px; height: 30px; padding-top: 2px; padding-left: 8px; border-radius: 3px">
+                            Change
+                        </button>
+                    </div>
+                    <div class="col"></div>
+                </form>
+            </div>
+
+
+        </div>
+        <br><br>
+        <div th:object="${patientViewModel}" class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <form  class="form-row align-content-md-center"
+                      th:action="@{/patients/modify/consentForOrgans/{id}(id=*{id})}"
+                      method="POST">
+                    <p>Consent for organ donation after death:</p>
+                    <p sec:authorize="hasRole('PHYSICIAN')" th:text="*{consentForOrganDonationAfterDeath} ? 'YES': 'NO'"
+                       class="text-info bg-light"></p>
+                    <div class="form-group">
+                        <label sec:authorize="hasRole('PATIENT')" class="radio-inline">
+                            <input type="radio" name="consentForOrganDonationAfterDeath" id="no"
+                                   value="0"
+                                   th:checked="*{!consentForOrganDonationAfterDeath}">No
+                        </label>
+                        <label sec:authorize="hasRole('PATIENT')" class="radio-inline">
+                            <input type="radio" name="consentForOrganDonationAfterDeath" id="yes"
+                                   value="1"
+                                   th:checked="*{consentForOrganDonationAfterDeath}">Yes
+                        </label>
+                    </div>
+
+                    <div class="col align-content-md-center">
+                        <button sec:authorize="hasRole('PATIENT')" type="submit"
+                                class="btn btn-success btn-small text-center"
+                                style="width: 80px; height: 30px; padding-top: 2px; padding-left: 8px; border-radius: 3px">
+                            Change
+                        </button>
+                    </div>
+
+
+                </form>
+
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+
+        <footer class="row">
+            <div class="col-12 container-fluid text-right font-weight-light">
+                <p class="d-inline-block tm-bg-black text-white py-2 px-4">
+                    &copy; Spring Team 2020
+                </p>
+            </div>
+        </footer>
+    </div>
+</div>
+<script>
+    // get yes button
+    let yes = document.getElementById('yes');
+
+    // get no button
+    let no = document.getElementById('no');
+
+    // when yes is clicked
+    yes.addEventListener('click', function (e) {
+        // warn
+        let result = warn();
+
+        // if selected no, switch button
+        if (!result) no.checked = true;
+    });
+
+    // when no is clicked
+    no.addEventListener('click', function (e) {
+        // warn
+        let result = warn();
+
+        // if selected no, switch button
+        if (!result) yes.checked = true;
+    });
+
+    function warn() {
+        return confirm('Are you sure you want to select this ?');
+    }
+</script>
+
+</body>
+</html>
