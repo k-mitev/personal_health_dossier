@@ -29,7 +29,14 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .authorizeRequests()
                 .antMatchers("/js/**", "/css/**", "/img/**").permitAll()
                 .antMatchers("/", "/users/register", "/users/login").permitAll()
-                .antMatchers("/**").authenticated()
+//                .antMatchers("/**").authenticated()
+                .antMatchers("/home").authenticated()
+                .antMatchers("/allergies/add", "/prescriptions/add",
+                        "/immunizations/add", "/medical-centers/add", "/physicians/edit-profile/**",
+                        "/modify/kilos/**", "/modify/height/**", "/modify/bloodGroup/**").hasRole("PHYSICIAN")
+                .antMatchers("/allergies/all/**", "/prescriptions/all/**",
+                        "/immunizations/all/**", "/medical-centers/all/**", "/patients/edit-profile/**",
+                        "/modify/consentForOrgans/**").hasAnyRole("PATIENT", "ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/users/login")

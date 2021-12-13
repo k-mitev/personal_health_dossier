@@ -12,7 +12,7 @@ public class UserRoleEntity extends BaseEntity {
     private UserRoleEnum role;
     private List<PhysicianEntity> doctors;
     private List<PatientEntity> patients;
-    private List<PharmacistEntity> pharmacists;
+
 
     public UserRoleEntity() {
     }
@@ -45,12 +45,5 @@ public class UserRoleEntity extends BaseEntity {
         this.patients = patients;
     }
 
-    @ManyToMany(mappedBy = "roles")
-    public List<PharmacistEntity> getPharmacists() {
-        return pharmacists;
-    }
 
-    public void setPharmacists(List<PharmacistEntity> pharmacists) {
-        this.pharmacists = pharmacists;
-    }
 }

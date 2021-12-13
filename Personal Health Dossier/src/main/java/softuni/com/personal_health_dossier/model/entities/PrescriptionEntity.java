@@ -17,7 +17,7 @@ public class PrescriptionEntity extends BaseEntity {
     private Integer usageTimes;
     private PhysicianEntity issuedBy;
     private PatientEntity patient;
-    private List<PharmacistEntity> filledBy;
+
 
     public PrescriptionEntity() {
         this.issueDate = LocalDate.now();
@@ -88,14 +88,7 @@ public class PrescriptionEntity extends BaseEntity {
         this.patient = user;
     }
 
-    @ManyToMany
-    public List<PharmacistEntity> getFilledBy() {
-        return filledBy;
-    }
 
-    public void setFilledBy(List<PharmacistEntity> filledBy) {
-        this.filledBy = filledBy;
-    }
 
     public void setTheExpiryDate() {
         if (this.getType().name().equals("WHITE")) {

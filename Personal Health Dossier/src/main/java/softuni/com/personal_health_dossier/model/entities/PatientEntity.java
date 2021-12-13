@@ -24,7 +24,7 @@ public class PatientEntity extends BaseEntityUsers {
     private List<MedicalCenterEntity> medicalCenters;
     private List<ImmunizationEntity> immunizations;
     private List<AllergyEntity> allergies;
-    private List<PharmacistEntity> pharmacists;
+
 
     public PatientEntity(String pin) {
         this.setPersonalIdentificationNumber(pin);
@@ -136,14 +136,6 @@ public class PatientEntity extends BaseEntityUsers {
         this.allergies = allergies;
     }
 
-    @ManyToMany
-    public List<PharmacistEntity> getPharmacists() {
-        return pharmacists;
-    }
-
-    public void setPharmacists(List<PharmacistEntity> pharmacists) {
-        this.pharmacists = pharmacists;
-    }
 
     public void addRole(UserRoleEntity userRoleEntity) {
         this.getRoles().add(userRoleEntity);

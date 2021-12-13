@@ -8,10 +8,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import softuni.com.personal_health_dossier.model.entities.BaseEntityUsers;
 import softuni.com.personal_health_dossier.model.entities.PatientEntity;
-import softuni.com.personal_health_dossier.model.entities.PharmacistEntity;
 import softuni.com.personal_health_dossier.model.entities.PhysicianEntity;
 import softuni.com.personal_health_dossier.repository.PatientRepository;
-import softuni.com.personal_health_dossier.repository.PharmacistRepository;
 import softuni.com.personal_health_dossier.repository.PhysicianRepository;
 
 import javax.transaction.Transactional;
@@ -24,12 +22,12 @@ public class HealthDossierUserService implements UserDetailsService {
 
     private final PatientRepository patientRepository;
     private final PhysicianRepository physicianRepository;
-    private final PharmacistRepository pharmacistRepository;
 
-    public HealthDossierUserService(PatientRepository patientRepository, PhysicianRepository physicianRepository, PharmacistRepository pharmacistRepository) {
+
+    public HealthDossierUserService(PatientRepository patientRepository, PhysicianRepository physicianRepository) {
         this.patientRepository = patientRepository;
         this.physicianRepository = physicianRepository;
-        this.pharmacistRepository = pharmacistRepository;
+
     }
 
 
@@ -52,13 +50,6 @@ public class HealthDossierUserService implements UserDetailsService {
             return mapToUserDetails(physicianEntity);
         }
 
-        PharmacistEntity pharmacistEntity =
-                this.pharmacistRepository
-                        .findByUsername(username)
-                        .orElse(null);
-        if (pharmacistEntity != null) {
-            return mapToUserDetails(pharmacistEntity);
-        }
 
         throw new UsernameNotFoundException("User with username '" + username + "' was not found.");
     }
