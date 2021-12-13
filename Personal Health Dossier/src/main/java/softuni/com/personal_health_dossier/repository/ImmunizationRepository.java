@@ -7,7 +7,7 @@ import softuni.com.personal_health_dossier.model.entities.ImmunizationEntity;
 import java.util.List;
 
 @Repository
-public interface ImmunizationRepository extends JpaRepository<ImmunizationEntity,Long> {
+public interface ImmunizationRepository extends JpaRepository<ImmunizationEntity, Long> {
 
-    List<ImmunizationEntity>findAllByPatientId(Long id);
+    List<ImmunizationEntity> findAllByPatient_Id(Long id);
 }

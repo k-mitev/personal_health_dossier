@@ -8,21 +8,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import softuni.com.personal_health_dossier.model.bindings.PrescriptionAddBindingModel;
 import softuni.com.personal_health_dossier.model.entities.PatientEntity;
 import softuni.com.personal_health_dossier.model.services.PrescriptionAddServiceModel;
+import softuni.com.personal_health_dossier.model.views.PatientViewModel;
 import softuni.com.personal_health_dossier.model.views.PhysicianViewModel;
+import softuni.com.personal_health_dossier.model.views.PrescriptionViewModel;
 import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 import softuni.com.personal_health_dossier.service.PrescriptionService;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/prescriptions")
+
 public class PrescriptionsController {
     private final PhysicianService physicianService;
     private final PatientService patientService;
@@ -83,5 +90,21 @@ public class PrescriptionsController {
 
         this.prescriptionService.savePrescription(addServiceModel);
         return "redirect:/home";
+    }
+
+    @GetMapping("/all/{id}")
+    public String allPrescriptions(@PathVariable Long id, Model model) {
+        PatientViewModel patientViewModel = modelMapper.map(this.patientService.findPatientById(id), PatientViewModel.class);
+        List<PrescriptionViewModel> allPrescriptions = prescriptionService.findAllForAPatient(id).stream().map(p -> {
+            PrescriptionViewModel viewModel = modelMapper.map(p, PrescriptionViewModel.class);
+            viewModel.setIssuedBy("д-р " + p.getIssuedBy().getFirstName() + " " + p.getIssuedBy().getLastName());
+            viewModel.setType(p.getType().name());
+            return viewModel;
+        }).collect(Collectors.toList());
+
+        model.addAttribute("patientViewModel", patientViewModel);
+        model.addAttribute("allPrescriptions", allPrescriptions);
+
+        return "prescriptions-all";
     }
 }

@@ -13,12 +13,12 @@ import java.util.Set;
 @Table(name = "allergies")
 public class AllergyEntity extends BaseEntity {
     private LocalDate registeredOnDate;
-    private Set<AllergenEntity> allergens;
+    private List<AllergenEntity> allergens;
     private PhysicianEntity registeredBy;
     private PatientEntity patient;
 
     public AllergyEntity() {
-        this.allergens=new HashSet<>();
+        this.allergens=new ArrayList<>();
     }
 
     @Column(name = "registered_on_date", nullable = false)
@@ -30,12 +30,12 @@ public class AllergyEntity extends BaseEntity {
         this.registeredOnDate = registeredOnDate;
     }
 
-    @ManyToMany
-    public Set<AllergenEntity> getAllergens() {
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<AllergenEntity> getAllergens() {
         return allergens;
     }
 
-    public void setAllergens(Set<AllergenEntity> allergens) {
+    public void setAllergens(List<AllergenEntity> allergens) {
         this.allergens = allergens;
     }
 

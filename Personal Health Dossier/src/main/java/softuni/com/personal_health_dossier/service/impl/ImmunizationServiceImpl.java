@@ -12,6 +12,8 @@ import softuni.com.personal_health_dossier.service.ImmunizationService;
 import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 
+import java.util.List;
+
 @Service
 public class ImmunizationServiceImpl implements ImmunizationService {
     private final PatientService patientService;
@@ -43,5 +45,10 @@ public class ImmunizationServiceImpl implements ImmunizationService {
         immunizationEntity.setVaccinatedBy(physicianEntity.getFirstName() + " " + physicianEntity.getLastName());
 
         this.immunizationRepository.save(immunizationEntity);
+    }
+
+    @Override
+    public List<ImmunizationEntity> findAllImmunizationsByPatientId(Long patientId) {
+        return this.immunizationRepository.findAllByPatient_Id(patientId);
     }
 }

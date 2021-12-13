@@ -12,6 +12,7 @@ import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 import softuni.com.personal_health_dossier.service.PrescriptionService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,5 +45,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         prescriptionEntity.setTheExpiryDate();
 
         this.prescriptionRepository.save(prescriptionEntity);
+    }
+
+    @Override
+    public List<PrescriptionEntity> findAllForAPatient(Long patientId) {
+
+        return this.prescriptionRepository.findAllByPatientId(patientId);
     }
 }

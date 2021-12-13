@@ -144,11 +144,6 @@
         <!-- row -->
         <div class="row tm-content-row tm-mt-big">
 
-            <!--            <div class="tm-col tm-col-big">-->
-            <!--                <div class="bg-white tm-block h-100">-->
-            <!--                    <div id="chart_div" style="width: 100%; height: 100%;"></div>-->
-            <!--                </div>-->
-            <!--            </div>-->
             <div class="tm-col tm-col-big">
                 <div class="bg-white tm-block h-100">
                     <div id="googlePiechart" style="width: 100%; height: 100%;"></div>
@@ -161,43 +156,12 @@
                 </div>
             </div>
 
-
-            <!--            <div class="tm-col tm-col-big">-->
-            <!--                <div class="bg-white tm-block h-100">-->
-            <!--                    <div class="row">-->
-            <!--                        <div class="col-8">-->
-            <!--                            <h2 class="tm-block-title d-inline-block">Top Scored Students</h2>-->
-            <!--                        </div>-->
-            <!--                        <div class="col-4 text-right">-->
-            <!--                            <a class="tm-link-black">View All</a>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                    <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">-->
-
-            <!--                        <li class="tm-list-group-item">Top student one</li>-->
-            <!--                        <li class="tm-list-group-item">Top student two</li>-->
-            <!--                        <li class="tm-list-group-item">Top student three</li>-->
-
-            <!--                    </ol>-->
-            <!--                </div>-->
-            <!--            </div>-->
             <div class="tm-col tm-col-big">
                 <div class="bg-white tm-block h-100">
                     <div class="auto-jsCalendar w-100"></div>
                 </div>
             </div>
-            <!--            <div class="tm-col tm-col-small">-->
-            <!--                <div class="bg-white tm-block h-100">-->
-            <!--                    <h2 class="tm-block-title">Active Exercises</h2>-->
-            <!--                    <ol class="tm-list-group">-->
 
-            <!--                        <li class="tm-list-group-item">Active exercise one</li>-->
-            <!--                        <li class="tm-list-group-item">Active exercise two</li>-->
-            <!--                        <li class="tm-list-group-item">Active exercise three</li>-->
-
-            <!--                    </ol>-->
-            <!--                </div>-->
-            <!--            </div>-->
         </div>
         <footer class="row">
             <div class="col-12 container-fluid text-right font-weight-light">
@@ -247,33 +211,6 @@
         chartPie.draw(dataPie, optionsPie);
     }
 
-    google.charts.setOnLoadCallback(drawAreaChart);
-
-    function drawAreaChart() {
-        //ToDo averageGrades
-        let averageGrade = 4;
-
-        let dataArea = google.visualization.arrayToDataTable([
-            ['Grades', 'Legacy', 'Now'],
-            ['2018-Q2', 3.5, averageGrade],
-            ['2018-Q3', 2.5, averageGrade],
-            ['2018-Q4', 4.0, averageGrade],
-            ['2019-Q1', 3.6, averageGrade],
-            ['2019-Q2', 5.3, averageGrade],
-            ['2019-Q3', 3.9, averageGrade],
-            ['2019-Q4', 5.2, averageGrade]
-        ]);
-
-        let optionsArea = {
-            title: 'Legacy vs now grades',
-            vAxis: {minValue: 2}
-        };
-
-        let chartArea = new google.visualization
-            .AreaChart(document.getElementById('chart_div'));
-        chartArea.draw(dataArea, optionsArea);
-
-    }
 
     google.charts.load('current', {'packages': ['gauge']});
     google.charts.setOnLoadCallback(drawGauge);

@@ -8,18 +8,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import softuni.com.personal_health_dossier.model.bindings.ImmunizationAddBindingModel;
+import softuni.com.personal_health_dossier.model.entities.ImmunizationEntity;
 import softuni.com.personal_health_dossier.model.entities.PatientEntity;
 import softuni.com.personal_health_dossier.model.services.ImmunizationAddServiceModel;
+import softuni.com.personal_health_dossier.model.views.ImmunizationViewModel;
+import softuni.com.personal_health_dossier.model.views.PatientViewModel;
 import softuni.com.personal_health_dossier.model.views.PhysicianViewModel;
 import softuni.com.personal_health_dossier.service.ImmunizationService;
 import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/immunizations")
@@ -48,9 +54,9 @@ public class ImmunizationsController {
             model.addAttribute("physicianViewModel", physicianViewModel);
         }
 
-        if(!model.containsAttribute("immunizationAddBindingModel")){
-            model.addAttribute("immunizationAddBindingModel",new ImmunizationAddBindingModel());
-            model.addAttribute("patientDontExist",false);
+        if (!model.containsAttribute("immunizationAddBindingModel")) {
+            model.addAttribute("immunizationAddBindingModel", new ImmunizationAddBindingModel());
+            model.addAttribute("patientDontExist", false);
         }
         return "add-immunization";
     }
@@ -84,5 +90,21 @@ public class ImmunizationsController {
         this.immunizationService.saveImmunization(immunizationAddServiceModel);
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/all/{id}")
+    public String getAllImmunizationsForAPatient(@PathVariable Long id, Model model) {
+        PatientViewModel patientViewModel = modelMapper.map(this.patientService.findPatientById(id), PatientViewModel.class);
+
+        List<ImmunizationViewModel> immunizationViewModels = this.immunizationService
+                .findAllImmunizationsByPatientId(id)
+                .stream()
+                .map(immunizationEntity -> modelMapper.map(immunizationEntity, ImmunizationViewModel.class))
+                .collect(Collectors.toList());
+
+        model.addAttribute("patientViewModel", patientViewModel);
+        model.addAttribute("immunizationViewModels", immunizationViewModels);
+
+        return "immunizations-all";
     }
 }

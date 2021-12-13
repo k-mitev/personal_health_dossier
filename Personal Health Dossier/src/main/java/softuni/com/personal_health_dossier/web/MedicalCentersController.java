@@ -8,18 +8,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import softuni.com.personal_health_dossier.model.bindings.MedicalCenterAddBindingModel;
+import softuni.com.personal_health_dossier.model.entities.MedicalCenterEntity;
 import softuni.com.personal_health_dossier.model.entities.PatientEntity;
 import softuni.com.personal_health_dossier.model.services.MedicalCenterAddServiceModel;
+import softuni.com.personal_health_dossier.model.services.PatientServiceModel;
+import softuni.com.personal_health_dossier.model.views.MedicalCenterViewModel;
+import softuni.com.personal_health_dossier.model.views.PatientViewModel;
 import softuni.com.personal_health_dossier.model.views.PhysicianViewModel;
 import softuni.com.personal_health_dossier.service.MedicalCenterService;
 import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/medical-centers")
@@ -95,5 +102,18 @@ public class MedicalCentersController {
         this.medicalCenterService.saveMedicalCenter(medicalCenterAddServiceModel);
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/all/{id}")
+    public String allMedicalCenters(@PathVariable Long id, Model model) {
+        List<MedicalCenterViewModel> medicalCenters = medicalCenterService
+                .findAllForAPatient(id)
+                .stream()
+                .map(mc -> modelMapper.map(mc, MedicalCenterViewModel.class)).collect(Collectors.toList());
+        PatientViewModel patientViewModel = modelMapper.map(this.patientService.findPatientById(id), PatientViewModel.class);
+        model.addAttribute("patientViewModel", patientViewModel);
+        model.addAttribute("medCenters", medicalCenters);
+
+        return "medical-centers-all";
     }
 }

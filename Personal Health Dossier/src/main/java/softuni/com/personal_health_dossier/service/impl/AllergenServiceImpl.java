@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional
+//@Transactional
 public class AllergenServiceImpl implements AllergenService {
     private final AllergenRepository allergenRepository;
 

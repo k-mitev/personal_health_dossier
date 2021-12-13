@@ -47,4 +47,10 @@ public class MedicalCenterServiceImpl implements MedicalCenterService {
 
         this.medicalCenterRepository.save(medicalCenterEntity);
     }
+
+    @Override
+    public List<MedicalCenterEntity> findAllForAPatient(Long patientId) {
+        return this.medicalCenterRepository.findAllByPatientId(patientId);
+
+    }
 }

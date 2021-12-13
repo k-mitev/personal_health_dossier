@@ -52,4 +52,9 @@ public class AllergyServiceImpl implements AllergyService {
         this.allergyRepository.save(allergyEntity);
 
     }
+
+    @Override
+    public List<AllergyEntity> findAllForAPatient(Long patientId) {
+        return this.allergyRepository.findAllByPatientId(patientId);
+    }
 }
