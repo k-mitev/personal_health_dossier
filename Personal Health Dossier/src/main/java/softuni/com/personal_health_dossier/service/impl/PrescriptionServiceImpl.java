@@ -12,6 +12,7 @@ import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 import softuni.com.personal_health_dossier.service.PrescriptionService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,5 +52,11 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public List<PrescriptionEntity> findAllForAPatient(Long patientId) {
 
         return this.prescriptionRepository.findAllByPatientId(patientId);
+    }
+
+    @Override
+    public int findTotalPrescriptionsIssuedForTheCurrentDay(Long physicianId, LocalDate localDate) {
+
+        return this.prescriptionRepository.findAllIssuedOnTheCurrentDay(physicianId,localDate);
     }
 }
