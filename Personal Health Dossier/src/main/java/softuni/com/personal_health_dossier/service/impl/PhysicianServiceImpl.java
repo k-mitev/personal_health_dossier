@@ -1,12 +1,14 @@
 package softuni.com.personal_health_dossier.service.impl;
 
 import com.google.gson.Gson;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import softuni.com.personal_health_dossier.model.entities.PhysicianEntity;
 import softuni.com.personal_health_dossier.model.entities.UserRoleEntity;
 import softuni.com.personal_health_dossier.model.entities.enums.MedicalSpecialty;
 import softuni.com.personal_health_dossier.model.entities.enums.UserRoleEnum;
+import softuni.com.personal_health_dossier.model.services.PhysicianAddServiceModel;
 import softuni.com.personal_health_dossier.model.services.PhysicianEditProfileServiceModel;
 import softuni.com.personal_health_dossier.repository.PhysicianRepository;
 import softuni.com.personal_health_dossier.service.PhysicianService;
@@ -25,17 +27,18 @@ import java.util.Optional;
 public class PhysicianServiceImpl implements PhysicianService {
     private final static String PHYSICIAN_PATH = "src/main/resources/files/json/PhysicianRegisterInBG_March2019.json";
 
-
     private final Gson gson;
     private final PhysicianRepository physicianRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRoleService userRoleService;
+    private final ModelMapper modelMapper;
 
-    public PhysicianServiceImpl(Gson gson, PhysicianRepository physicianRepository, PasswordEncoder passwordEncoder, UserRoleService userRoleService) {
+    public PhysicianServiceImpl(Gson gson, PhysicianRepository physicianRepository, PasswordEncoder passwordEncoder, UserRoleService userRoleService, ModelMapper modelMapper) {
         this.gson = gson;
         this.physicianRepository = physicianRepository;
         this.passwordEncoder = passwordEncoder;
         this.userRoleService = userRoleService;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -97,6 +100,16 @@ public class PhysicianServiceImpl implements PhysicianService {
                 serviceModel.getPassword(), serviceModel.getRegion(),
                 serviceModel.getSpecialty(), serviceModel.getImgUrl(),
                 serviceModel.getId());
+    }
+
+    @Override
+    public void savePhysician(PhysicianAddServiceModel addServiceModel) {
+        PhysicianEntity physicianEntity = modelMapper.map(addServiceModel, PhysicianEntity.class);
+        physicianEntity.setPersonalIdentificationNumber(addServiceModel.getPhysicianPin());
+        physicianEntity.setPassword(passwordEncoder.encode(addServiceModel.getPassword()));
+        UserRoleEntity userRole = this.userRoleService.findByUserRole(UserRoleEnum.PHYSICIAN);
+        physicianEntity.setRoles(List.of(userRole));
+        this.physicianRepository.save(physicianEntity);
     }
 
 

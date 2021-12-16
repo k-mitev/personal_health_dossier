@@ -3,10 +3,8 @@ package softuni.com.personal_health_dossier.web;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,12 +18,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import softuni.com.personal_health_dossier.model.bindings.PhysicianAddBindingModel;
 import softuni.com.personal_health_dossier.model.bindings.PhysicianEditProfileBindingModel;
 import softuni.com.personal_health_dossier.model.entities.PhysicianEntity;
 import softuni.com.personal_health_dossier.model.entities.enums.MedicalSpecialty;
+import softuni.com.personal_health_dossier.model.services.PhysicianAddServiceModel;
 import softuni.com.personal_health_dossier.model.services.PhysicianEditProfileServiceModel;
+import softuni.com.personal_health_dossier.model.views.PatientViewModel;
 import softuni.com.personal_health_dossier.model.views.PhysicianViewModel;
 import softuni.com.personal_health_dossier.service.CloudinaryService;
+import softuni.com.personal_health_dossier.service.PatientService;
 import softuni.com.personal_health_dossier.service.PhysicianService;
 import softuni.com.personal_health_dossier.service.impl.HealthDossierUserService;
 
@@ -33,6 +35,7 @@ import javax.swing.*;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Optional;
 
 
 @Controller
@@ -40,13 +43,17 @@ import java.util.Collection;
 public class PhysiciansController {
     private static PhysicianEditProfileServiceModel serviceModel = new PhysicianEditProfileServiceModel();
     private final PhysicianService physicianService;
+    private final PatientService patientService;
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
     private final PasswordEncoder passwordEncoder;
     private final HealthDossierUserService healthDossierUserService;
 
-    public PhysiciansController(PhysicianService physicianService, ModelMapper modelMapper, CloudinaryService cloudinaryService, PasswordEncoder passwordEncoder, HealthDossierUserService healthDossierUserService) {
+    public PhysiciansController(PhysicianService physicianService, PatientService patientService,
+                                ModelMapper modelMapper, CloudinaryService cloudinaryService,
+                                PasswordEncoder passwordEncoder, HealthDossierUserService healthDossierUserService) {
         this.physicianService = physicianService;
+        this.patientService = patientService;
         this.modelMapper = modelMapper;
         this.cloudinaryService = cloudinaryService;
         this.passwordEncoder = passwordEncoder;
@@ -209,6 +216,65 @@ public class PhysiciansController {
 
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/add")
+    public String addPhysician(Model model, @AuthenticationPrincipal UserDetails principal) {
+        if (principal.getUsername().startsWith("physician") &&
+                principal.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_PHYSICIAN"))) {
+            PhysicianViewModel physicianViewModel = this.physicianService
+                    .findPhysicianByUsername(principal.getUsername())
+                    .map(ph -> modelMapper.map(ph, PhysicianViewModel.class))
+                    .orElseThrow(() -> new UsernameNotFoundException("Physician not found!"));
+            model.addAttribute("physicianViewModel", physicianViewModel);
+            model.addAttribute("patientViewModel", new PatientViewModel());
+        } else {
+            PatientViewModel patientViewModel = this.patientService.findPatientByUsername(principal.getUsername())
+                    .map(patient -> modelMapper.map(patient, PatientViewModel.class))
+                    .orElseThrow(() -> new UsernameNotFoundException("Patient not found"));
+            model.addAttribute("patientViewModel", patientViewModel);
+            model.addAttribute("physicianViewModel", new PhysicianViewModel());
+        }
+        if (!model.containsAttribute("physicianAddBindingModel")) {
+            model.addAttribute("physicianAddBindingModel", new PhysicianAddBindingModel());
+            model.addAttribute("usernameExists", false);
+        }
+        return "add-physician";
+    }
+
+    @PostMapping("/add")
+    public String addPhysicianConfirm(@Valid PhysicianAddBindingModel physicianAddBindingModel,
+                                      BindingResult bindingResult,
+                                      RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("physicianAddBindingModel", physicianAddBindingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.physicianAddBindingModel",
+                    bindingResult);
+            return "redirect:add";
+        }
+        PhysicianEntity physicianEntity = this.physicianService.findPhysicianByUsername(physicianAddBindingModel.getUsername())
+                .orElse(null);
+
+        if (physicianEntity != null) {
+            redirectAttributes.addFlashAttribute("physicianAddBindingModel", physicianAddBindingModel);
+            redirectAttributes.addFlashAttribute("usernameExists", true);
+            return "redirect:add";
+        }
+
+        PhysicianAddServiceModel addServiceModel = modelMapper.map(physicianAddBindingModel, PhysicianAddServiceModel.class);
+
+        if (!physicianAddBindingModel.getImg().isEmpty()) {
+            try {
+                String image = this.cloudinaryService.uploadImage(physicianAddBindingModel.getImg());
+                addServiceModel.setImgUrl(image);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        this.physicianService.savePhysician(addServiceModel);
+        return "redirect:/home";
+
     }
 
     private void updateSecurityContextHolder(String newPassword, String oldPassword, String physicianUsername, String physicianPassword) {

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Judge v2</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!--    Calendar-->
+    <script src="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.js"
+            integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.css"
+          integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
+</head>
+
+<body id="reportsPage">
+<div class="" id="home">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="navbar navbar-expand-xl navbar-light bg-light rounded">
+                    <a class="navbar-brand" th:href="@{/home}">
+                        <h1 class="tm-site-title mb-0"><em>Health Dossier</em></h1>
+                    </a>
+                    <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                    <div sec:authorize="hasRole('PATIENT')" th:object="${patientViewModel}"
+                         class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/home}">
+                                    <span th:text="|Hello, *{getFirstName()} *{getLastName()}!|"></span>
+                                </a>
+                            </li>
+
+                            <li sec:authorize="hasRole('ADMIN')" class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/physicians/add">Add Physician</a>
+                                    <a class="dropdown-item" href="/users/add-role">Add Role</a>
+
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/medical-centers/all/{id}(id=*{id})}">Medical Centers</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/prescriptions/all/{id}(id=*{id})}">Prescriptions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/allergies/all/{id}(id=*{id})}">Allergies</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/immunizations/all/{id}(id=*{id})}">Immunizations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/patients/edit-profile/{id}(id=*{id})}">Profile</a>
+                            </li>
+
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <form th:action="@{/logout}" method="POST">
+                                    <button type="submit" class="nav-link d-flex btn btn-link">
+                                        Logout
+                                    </button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </div>
+                    <div sec:authorize="hasRole('PHYSICIAN')" th:object="${physicianViewModel}"
+                         class="collapse navbar-collapse">
+                        <ul class="navbar-nav mx-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/home}">
+                                    <span th:text="|Д-р, *{lastName}! You are viewing the profile of patient: *{patient.firstName} *{patient.lastName}!|"></span>
+                                </a>
+                            </li>
+
+                            <li sec:authorize="hasRole('ADMIN')" class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    Admin
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/physicians/add">Add Physician</a>
+                                    <a class="dropdown-item" href="/users/add-role">Add Role</a>
+
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/immunizations/add">Immunization</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/prescriptions/add">Write a prescription</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="/medical-centers/add">Hospitalize</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/allergies/add">Add Allergy</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/physicians/edit-profile/{id}(id=*{id})}">Profile</a>
+                            </li>
+
+                        </ul>
+
+
+                        <ul class="navbar-nav">
+
+                            <li class="nav-item">
+                                <form th:action="@{/logout}" method="POST">
+                                    <button type="submit" class="nav-link d-flex btn btn-link">
+                                        Logout
+                                    </button>
+                                </form>
+
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- row -->
+        <br>
+        <br>
+        <br>
+        <div class="row tm-mt-big justify-content-center">
+            <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+                <div class="bg-white tm-block">
+                    <div class="row justify-content-center text-center">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Add Physician </h2>
+                        </div>
+                    </div>
+                    <div class="row mt-4 tm-edit-product-row">
+                        <div class="col-xl-7 col-lg-7 col-md-12">
+                            <form
+                                    th:action="@{/physicians/add}"
+                                    method="POST"
+                                    enctype="multipart/form-data"
+                                    class="text-dark tm-edit-product-form">
+                                <div class="form-row m-5">
+                                    <div class="col">
+                                        <label for="inputUsername">Username</label>
+                                        <input name="username"
+                                               th:field="${physicianAddBindingModel.username}"
+                                               th:errorclass="is-invalid"
+                                               required
+                                               aria-describedby="usernameHelpInline"
+                                               id="inputUsername"
+                                               type="text" class="form-control"
+                                               placeholder="Username">
+                                        <small
+                                                id="usernameError"
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Username
+                                            should start with 'physician'</small>
+                                        <small th:if="${usernameExists}" class="text-light form-text bg-danger rounded">Username
+                                            is
+                                            already
+                                            used</small>
+                                    </div>
+                                    <div class="col">
+                                        <label for="firstName">First name</label>
+                                        <input th:field="${physicianAddBindingModel.firstName}"
+                                               th:errorclass="is-invalid"
+                                               required
+                                               name="firstName"
+                                               id="firstName" type="text" class="form-control"
+                                               placeholder="First name">
+                                        <small
+                                                id="firstNameError"
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Should
+                                            start
+                                            with capital letter and latin or cyrillic letters can be used.</small>
+                                    </div>
+                                </div>
+                                <div class="form-row m-5">
+                                    <div class="col">
+                                        <label for="middleName">Middle name</label>
+                                        <input name="middleName"
+                                               th:field="${physicianAddBindingModel.middleName}"
+                                               th:errorclass="is-invalid"
+
+                                               maxlength="23"
+                                               type="text" id="middleName"
+                                               class="form-control" placeholder="Middle name">
+                                        <small
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Should
+                                            start
+                                            with capital letter and latin or cyrillic letters can be used.</small>
+                                    </div>
+                                    <div class="col">
+                                        <label for="lastName">Last name</label>
+                                        <input name="lastName"
+                                               th:field="${physicianAddBindingModel.lastName}"
+                                               th:errorclass="is-invalid"
+                                               required
+                                               maxlength="23"
+                                               type="text" id="lastName"
+                                               class="form-control" placeholder="Last name">
+                                        <small
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Should
+                                            start
+                                            with capital letter and latin or cyrillic letters can be used.</small>
+                                    </div>
+                                </div>
+                                <div class="form-row m-5">
+                                    <div class="col">
+                                        <label for="password">Password</label>
+                                        <input name="password"
+                                               th:field="${physicianAddBindingModel.password}"
+                                               th:errorclass="is-invalid"
+                                               required
+                                               type="password"
+                                               id="password"
+                                               class="form-control" placeholder="Password">
+                                        <small
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Enter
+                                            valid
+                                            password</small>
+
+                                    </div>
+                                    <div class="col">
+                                        <label for="physicianPin">Physician PIN</label>
+                                        <input name="physicianPin"
+                                               th:field="${physicianAddBindingModel.physicianPin}"
+                                               th:errorclass="is-invalid"
+                                               required
+                                               type="text"
+                                               id="physicianPin"
+                                               class="form-control" placeholder="Physician PIN">
+                                        <small
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Can
+                                            contain exactly ten digits</small>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-row m-5">
+                                    <div class="col">
+                                        <label for="mobileNumber">Mobile number</label>
+                                        <input name="mobileNumber"
+                                               th:field="${physicianAddBindingModel.mobileNumber}"
+                                               th:errorclass="is-invalid"
+
+                                               type="tel"
+                                               id="mobileNumber"
+                                               class="form-control" placeholder="Mobile number">
+                                        <small
+
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Should
+                                            start
+                                            with '+' and contains only digits</small>
+
+                                    </div>
+                                    <div class="col">
+                                        <label for="region">Region</label>
+                                        <input name="region"
+                                               th:field="${physicianAddBindingModel.region}"
+                                               th:errorclass="is-invalid"
+                                               required
+                                               type="text"
+                                               id="region"
+                                               class="form-control" placeholder="Region">
+                                        <small
+                                                class="invalid-feedback text-light form-text bg-danger rounded">Enter
+                                            valid
+                                            region</small>
+
+                                    </div>
+                                </div>
+                                <div class="form-row m-5">
+                                    <div class="col">
+                                        <label for="specialty">Medical Specialty</label>
+                                        <select th:field="${physicianAddBindingModel.specialty}"
+                                                th:errorclass="is-invalid"
+                                                id="specialty" name="specialty" class="custom-select">
+                                            <option value="" selected>Select specialty</option>
+                                            <option
+                                                    th:each="s : ${T(softuni.com.personal_health_dossier.model.entities.enums.MedicalSpecialty).values()}"
+                                                    th:value="${s}"
+                                                    th:text="${s}">Select specialty
+                                            </option>
+                                        </select>
+                                        <br>
+
+                                            <small id="specialtyError"
+                                                   class="invalid-feedback text-light form-text bg-danger rounded">You
+                                                must select specialty</small>
+
+                                    </div>
+                                    <div class="col">
+                                        <label for="add-image">Select picture</label>
+                                        <input type="file" class="form-control-file" id="add-image" name="img">
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <button class="btn btn-success btn-block w-50 rounded" type="submit">Add physician
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-12 mx-auto mb-4">
+                            <img src="/img/user-picture.jpg" alt="Profile Image"
+                                 class="img-fluid mx-auto d-block">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <th:block th:include="~{fragments/footer}"></th:block>
+    </div>
+</div>
+
+
+</body>
+</html>

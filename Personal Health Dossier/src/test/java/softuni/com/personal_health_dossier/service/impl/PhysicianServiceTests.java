@@ -7,22 +7,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import softuni.com.personal_health_dossier.model.entities.UserRoleEntity;
 import softuni.com.personal_health_dossier.model.entities.enums.MedicalSpecialty;
-import softuni.com.personal_health_dossier.model.entities.enums.UserRoleEnum;
 import softuni.com.personal_health_dossier.model.services.PhysicianEditProfileServiceModel;
 import softuni.com.personal_health_dossier.repository.PhysicianRepository;
 import softuni.com.personal_health_dossier.service.UserRoleService;
-
-import java.io.IOException;
-import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class PhysicianServiceTests {
 
     private PhysicianServiceImpl serviceToTest;
     private Gson gson;
+    private ModelMapper modelMapper;
     @Mock
     PhysicianRepository mockPhysicianRepository;
 
@@ -36,7 +33,7 @@ public class PhysicianServiceTests {
     @BeforeEach
     public void setup() {
         serviceToTest = new PhysicianServiceImpl(gson, mockPhysicianRepository,
-                mockPasswordEncoder, mockUserRoleService);
+                mockPasswordEncoder, mockUserRoleService, modelMapper);
     }
 
     @Test

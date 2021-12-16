@@ -3,94 +3,14 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Judge v2</title>
-
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
-    <script src="/js/jquery-3.3.1.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <!--    Calendar-->
-    <script src="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.js"
-            integrity="sha384-0LaRLH/U5g8eCAwewLGQRyC/O+g0kXh8P+5pWpzijxwYczD3nKETIqUyhuA8B/UB"
-            crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-jscalendar@1.4.4/source/jsCalendar.min.css"
-          integrity="sha384-44GnAqZy9yUojzFPjdcUpP822DGm1ebORKY8pe6TkHuqJ038FANyfBYBpRvw8O9w" crossorigin="anonymous">
-</head>
+<th:block th:include="~{fragments/head}"></th:block>
 
 <body id="reportsPage">
 <div class="" id="home">
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <nav class="navbar navbar-expand-xl navbar-light bg-light rounded">
-                    <a class="navbar-brand" th:href="@{/home}">
-                        <h1 class="tm-site-title mb-0"><em>Health Dossier</em></h1>
-                    </a>
-                    <button class="navbar-toggler ml-auto mr-0" type="button" data-toggle="collapse"
-                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div sec:authorize="hasRole('PATIENT')" th:object="${patientViewModel}"
-                         class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mx-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/home}">
-                                    <span th:text="|Hello, *{getFirstName()} *{getLastName()}!|"></span>
-                                </a>
-                            </li>
-
-                            <li sec:authorize="hasRole('ADMIN')" class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-                                   role="button" data-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">
-                                    Admin
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="/physicians/add">Add Physician</a>
-                                    <a class="dropdown-item" href="/users/add-role">Add Role</a>
-
-                                </div>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/medical-centers/all/{id}(id=*{id})}">Medical Centers</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/prescriptions/all/{id}(id=*{id})}">Prescriptions</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/allergies/all/{id}(id=*{id})}">Allergies</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/immunizations/all/{id}(id=*{id})}">Immunizations</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" th:href="@{/patients/edit-profile/{id}(id=*{id})}">Profile</a>
-                            </li>
-
-                        </ul>
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <form th:action="@{/logout}" method="POST">
-                                    <button type="submit" class="nav-link d-flex btn btn-link">
-                                        Logout
-                                    </button>
-                                </form>
-
-                            </li>
-                        </ul>
-                    </div>
-
-                </nav>
+                <th:block th:include="~{fragments/navigation-patient}"></th:block>
             </div>
         </div>
         <!-- row -->
@@ -104,13 +24,7 @@
 
         </div>
 
-        <footer class="row">
-            <div class="col-12 container-fluid text-right font-weight-light">
-                <p class="d-inline-block tm-bg-black text-white py-2 px-4">
-                    &copy; Spring Team 2020
-                </p>
-            </div>
-        </footer>
+        <th:block th:include="~{fragments/footer}"></th:block>
     </div>
 </div>
 

@@ -87,8 +87,8 @@
                            th:field="*{middleName}"
                            th:errorclass="bg-danger"
                            maxlength="23"
-                           type="text"  id="middleName"
-                            class="form-control" placeholder="Middle name">
+                           type="text" id="middleName"
+                           class="form-control" placeholder="Middle name">
                     <small th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"
                            class="text-light form-text bg-danger rounded">Enter valid middle name</small>
                 </div>
@@ -99,7 +99,7 @@
                            th:errorclass="bg-danger"
                            required minlength="2" maxlength="23"
                            type="text" id="lastName"
-                            class="form-control" placeholder="Last name">
+                           class="form-control" placeholder="Last name">
                     <small th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
                            class="text-light form-text bg-danger rounded">Enter valid last name</small>
                 </div>
@@ -133,9 +133,9 @@
             </div>
             <div class="d-flex justify-content-center mt-4">
 
-                    <small th:if="${passwordsDontMatch}" class="text-light form-text bg-danger rounded">Passwords
-                        should
-                        match</small>
+                <small th:if="${passwordsDontMatch}" class="text-light form-text bg-danger rounded">Passwords
+                    should
+                    match</small>
 
 
             </div>
@@ -143,15 +143,16 @@
                 <div class="col">
                     <label for="personalIdentificationNumber">Personal Identification Number</label>
                     <input name="personalIdentificationNumber"
-                              th:field="*{personalIdentificationNumber}"
-                              th:errorclass="bg-danger"
-                              required minlength="10" maxlength="10"
-                              type="text"
-                              id="personalIdentificationNumber"
-                              class="form-control" placeholder="Personal Identification Number">
+                           th:field="*{personalIdentificationNumber}"
+                           th:errorclass="bg-danger"
+                           required minlength="10" maxlength="10"
+                           type="text"
+                           id="personalIdentificationNumber"
+                           class="form-control" placeholder="Personal Identification Number">
                     <small th:if="${#fields.hasErrors('personalIdentificationNumber')}"
-                           th:errors="*{personalIdentificationNumber}" class="text-light form-text bg-danger rounded">Enter valid
-                    personal identification number</small>
+                           th:errors="*{personalIdentificationNumber}" class="text-light form-text bg-danger rounded">Enter
+                        valid
+                        personal identification number</small>
                     <small th:if="${pinExists}" class="text-light form-text bg-danger rounded">User with this PIN
                         already exists</small>
                 </div>
@@ -241,13 +242,7 @@
     <!--    </div>-->
 
 </div>
-<footer class="row">
-    <div class="col-12 container-fluid text-right font-weight-light">
-        <p class="d-inline-block tm-bg-black text-white py-2 px-4">
-            &copy; Spring Team 2020
-        </p>
-    </div>
-</footer>
+<th:block th:include="~{fragments/footer}"></th:block>
 </body>
 
 </html>
