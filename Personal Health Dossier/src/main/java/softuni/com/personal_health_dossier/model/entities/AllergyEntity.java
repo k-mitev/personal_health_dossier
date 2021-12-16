@@ -1,13 +1,12 @@
 package softuni.com.personal_health_dossier.model.entities;
 
-import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
+
 
 @Entity
 @Table(name = "allergies")
@@ -18,7 +17,7 @@ public class AllergyEntity extends BaseEntity {
     private PatientEntity patient;
 
     public AllergyEntity() {
-        this.allergens=new ArrayList<>();
+        this.allergens = new ArrayList<>();
     }
 
     @Column(name = "registered_on_date", nullable = false)

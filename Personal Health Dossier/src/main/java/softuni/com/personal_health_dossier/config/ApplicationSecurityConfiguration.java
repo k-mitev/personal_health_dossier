@@ -37,6 +37,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .antMatchers("/allergies/all/**", "/prescriptions/all/**",
                         "/immunizations/all/**", "/medical-centers/all/**", "/patients/edit-profile/**",
                         "/modify/consentForOrgans/**").hasAnyRole("PATIENT", "ADMIN")
+                .antMatchers("/physicians/add").hasRole("ADMIN")
                 .and()
                 .formLogin()
                 .loginPage("/users/login")

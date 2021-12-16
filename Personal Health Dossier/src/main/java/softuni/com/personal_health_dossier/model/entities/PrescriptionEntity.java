@@ -5,7 +5,7 @@ import softuni.com.personal_health_dossier.model.entities.enums.PrescriptionType
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.List;
+
 
 @Entity
 @Table(name = "prescriptions")
